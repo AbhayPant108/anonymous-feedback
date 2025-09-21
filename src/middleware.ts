@@ -7,7 +7,7 @@ export  async function middleware(request:NextRequest){
       req:request,
     secret:process.env.AUTH_SECRET,
    },)
-   console.log(token);
+   console.log(token?"tokrn available":"token missing");
    
     const url = request.nextUrl.pathname
     if(token && (url.startsWith('/sign-in')||url.startsWith('/sign-up')||url.startsWith('/verify')||url === '/'
