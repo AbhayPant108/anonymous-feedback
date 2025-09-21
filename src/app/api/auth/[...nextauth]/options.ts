@@ -4,8 +4,8 @@ import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { use } from "react";
- 
+import {User} from 'next-auth'
+
 export const {handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Credentials({
@@ -15,10 +15,10 @@ export const {handlers, signIn, signOut, auth } = NextAuth({
         email: { label: "Email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials): Promise<any> {
+      async authorize(credentials): Promise<User|null> {
   await dbConnect();
   try {
-    const user = await UserModel.findOne({ email: credentials?.email }).select('_id username isVerified isAcceptingMessage password')
+    const user = await UserModel.findOne({ email: credentials?.email })
     if (!user) throw new Error("User not found");
     if (!user.isVerified) throw new Error("Please verify your account before login");
     
@@ -27,11 +27,17 @@ export const {handlers, signIn, signOut, auth } = NextAuth({
       user.password
     );
     if (!isPasswordCorrect) throw new Error("Incorrect password");
-    return user;
+    return user?{
+      id:String(user._id),
+      username:user.username,
+      isAcceptingMessage:user.isAcceptingMessage,
+      isVerified:user.isVerified,
+      email:user.email
+    }:null
     
   } catch (error) {
     console.error(error);
-    return null; // better than throwing (NextAuth expects null for invalid creds)
+    return null ; // better than throwing (NextAuth expects null for invalid creds)
   }
 }
 ,
