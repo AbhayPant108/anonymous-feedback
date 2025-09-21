@@ -61,6 +61,8 @@ export async function GET(req:NextRequest) {
             message:"Not Authenticated."
         },{status:401})
     }
+    console.log(user);
+    
     const userId = user._id
     const getUser = await UserModel.findById(userId)
     if(!getUser){

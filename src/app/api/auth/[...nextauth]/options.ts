@@ -15,10 +15,10 @@ export const {handlers, signIn, signOut, auth } = NextAuth({
         email: { label: "Email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials): Promise<User|null> {
+      async authorize(credentials): Promise<User & {_id:unknown|string}|null> {
   await dbConnect();
   try {
-    const user = await UserModel.findOne({ email: credentials?.email })
+    const user = await UserModel.findOne({ email: credentials?.email }).select('_id username isVerified isAcceptingMessage email password')
     if (!user) throw new Error("User not found");
     if (!user.isVerified) throw new Error("Please verify your account before login");
     
@@ -28,11 +28,11 @@ export const {handlers, signIn, signOut, auth } = NextAuth({
     );
     if (!isPasswordCorrect) throw new Error("Incorrect password");
     return user?{
-      id:String(user._id),
+      _id:user._id,
       username:user.username,
       isAcceptingMessage:user.isAcceptingMessage,
       isVerified:user.isVerified,
-      email:user.email
+      
     }:null
     
   } catch (error) {
