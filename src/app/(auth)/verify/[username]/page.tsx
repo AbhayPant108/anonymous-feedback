@@ -19,7 +19,7 @@ import { ApiResponse } from "@/types/ApiResponse";
 import axios,{AxiosError} from "axios";
 import { verifySchema } from "@/schemas/verifySchema";
 
-export default function page(){
+export default function Verify(){
     const {username} = useParams<{username:string}>()
     const [isVerifying,setIsVerifying] = useState<boolean>(false)
     const router = useRouter()

@@ -14,7 +14,7 @@ import { Separator } from "@/components/ui/separator"
 import { Loader2, RefreshCcw } from "lucide-react"
 import { MessageCard } from "@/components/message"
 
-export default function dashboard() {
+export default function Dashboard() {
     const [messages, setMessages] = useState<Message[]>([])
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [isSwitchLoading, setIsSwitchLoading] = useState<boolean>(false)

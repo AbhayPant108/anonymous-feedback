@@ -20,7 +20,7 @@ import { Toast } from '@/components/ui/toast'
 import { ApiResponse } from '@/types/ApiResponse'
 import { Loader2 } from 'lucide-react';
 
-function page() {
+function Page() {
     const [isSending , setIsSending] = useState<boolean>(false)
     const {username} = useParams<{username:string}>()
     const form = useForm({
@@ -66,7 +66,7 @@ function page() {
             </FormItem>
           )}
         />
-        <Button disabled={isSending} type="submit">{isSending?(<span className='flex justify-between items-center gap-1'><Loader2 /> "Sending"</span>):"Send Message"}</Button>
+        <Button disabled={isSending} type="submit">{isSending?(<span className='flex justify-between items-center gap-1'><Loader2 /> Sending</span>):"Send Message"}</Button>
       </form>
     </div>
 
@@ -77,4 +77,4 @@ function page() {
 
 
 
-export default page
+export default Page
