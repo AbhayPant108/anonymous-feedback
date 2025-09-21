@@ -50,7 +50,6 @@ export default function dashboard() {
         setIsSwitchLoading(false)
         try {
             const res = await axios.get<ApiResponse>('/api/get-messages')
-            console.log(res.data.messages);
             
             setMessages(res.data.messages || [])
             if (refresh) {
@@ -74,10 +73,8 @@ export default function dashboard() {
 
     const handleSwitchChange = async () => {
         try {
-            console.log(acceptMessages);
             
             const res = await axios.post<ApiResponse>('/api/accept-messages',{acceptMessages:!acceptMessages})
-            console.log(res.data);
             
             setValue('acceptMessages', !acceptMessages)
             Toast({ varient: "success", title: res.data.message })
