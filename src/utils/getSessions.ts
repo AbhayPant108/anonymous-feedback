@@ -1,4 +1,4 @@
-import {auth } from '@/middleware'
+import {auth } from '@/app/api/auth/[...nextauth]/options'
 import { User } from 'next-auth';
 import { NextResponse } from 'next/server';
 
