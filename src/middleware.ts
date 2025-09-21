@@ -6,6 +6,7 @@ export  async function middleware(request:NextRequest){
     const token =await getToken({
       req:request,
     secret:process.env.AUTH_SECRET,
+    secureCookie:request.nextUrl.protocol === 'https:'
    },)
    console.log(token?"tokrn available":"token missing");
    
