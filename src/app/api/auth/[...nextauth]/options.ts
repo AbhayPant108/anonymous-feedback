@@ -70,7 +70,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         strategy: "jwt",
     },
     secret: process.env.AUTH_SECRET,
-    trustHost: true,
     cookies: {
         sessionToken: {
             name: process.env.NODE_ENV === "production"
