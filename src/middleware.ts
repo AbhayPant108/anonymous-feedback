@@ -1,15 +1,17 @@
 import { NextResponse, NextRequest } from 'next/server'
 import { getToken } from 'next-auth/jwt'
 
+
 export async function middleware(request: NextRequest) {
+  const cookies = await request.cookies.getAll()
+console.log(cookies);
+
   const token = await getToken({
     req: request,
     secret: process.env.AUTH_SECRET,
-    cookieName: process.env.NODE_ENV === 'production'
-      ? '__Secure-next-auth.session-token'
-      : 'next-auth.session-token',
   });
-
+  console.log(token);
+  
   console.log(token ? "token available" : "token missing");
 
   const url = request.nextUrl.pathname;
