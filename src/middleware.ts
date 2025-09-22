@@ -1,43 +1,42 @@
-import { NextResponse, NextRequest } from 'next/server'
-import { getToken } from 'next-auth/jwt'
+// middleware.ts
+import { NextResponse, NextRequest } from "next/server"
+import { getToken } from "next-auth/jwt"
 
+export async function middleware(req: NextRequest) {
+  const { pathname, origin } = req.nextUrl
 
-export async function middleware(request: NextRequest) {
-  const cookies = await request.cookies.getAll()
-console.log(cookies);
-console.log(process.env.AUTH_SECRET);
-
+  // Try to decode JWT
   const token = await getToken({
-    req: request,
-    raw:true,
-    secureCookie:true,
+    req,
     secret: process.env.AUTH_SECRET,
-    cookieName:process.env.NODE_ENV === "production"? "__Secure-next-auth.session-token": "next-auth.session-token"
-  });
-  console.log(token);
-  
-  
-  console.log(token ? "token available" : "token missing");
+    secureCookie: process.env.NODE_ENV === "production",
+    cookieName:
+      process.env.NODE_ENV === "production"
+        ? "__Secure-next-auth.session-token"
+        : "next-auth.session-token",
+  })
 
-  const url = request.nextUrl.pathname;
+  console.log("AUTH TOKEN:", token ? token : "missing")
 
-  if (token && (url.startsWith('/sign-in') || url.startsWith('/sign-up') || url.startsWith('/verify') || url === '/')) {
-    return NextResponse.redirect(new URL('/dashboard', request.nextUrl.origin));
+  // Redirect logged-in users away from auth pages
+  if (
+    token &&
+    (pathname.startsWith("/sign-in") ||
+      pathname.startsWith("/sign-up") ||
+      pathname.startsWith("/verify") ||
+      pathname === "/")
+  ) {
+    return NextResponse.redirect(new URL("/dashboard", origin))
   }
-  
-  if (!token && url.startsWith('/dashboard')) {
-    return NextResponse.redirect(new URL('/sign-in', request.nextUrl.origin));
+
+  // Redirect unauthenticated users away from dashboard
+  if (!token && pathname.startsWith("/dashboard")) {
+    return NextResponse.redirect(new URL("/sign-in", origin))
   }
 
-  return NextResponse.next();
+  return NextResponse.next()
 }
 
 export const config = {
-  matcher: [
-    '/sign-in',
-    '/sign-up',
-    '/',
-    '/dashboard/:path*',
-    '/verify/:path*'
-  ]
-};
+  matcher: ["/sign-in", "/sign-up", "/", "/dashboard/:path*", "/verify/:path*"],
+}
