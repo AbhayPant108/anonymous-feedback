@@ -1,28 +1,29 @@
 import { NextResponse, NextRequest } from 'next/server'
-import { getToken } from 'next-auth/jwt'  // for getting tokens
+import { getToken } from 'next-auth/jwt'
 
-export  async function middleware(request:NextRequest){
-    // getting token
-    const token =await getToken({
-      req:request,
-    secret:process.env.AUTH_SECRET,
-    secureCookie:process.env.NODE_ENV === 'production',
-    salt:"10"
-   },)
-   console.log(token?"tokrn available":"token missing");
-   
-    const url = request.nextUrl.pathname
-    if(token && (url.startsWith('/sign-in')||url.startsWith('/sign-up')||url.startsWith('/verify')||url === '/'
-    ))
-  {return NextResponse.redirect(new URL('/dashboard', request.nextUrl.origin))}
-  if(!token && url.startsWith('/dashboard')){
-    return NextResponse.redirect(new URL('/sign-in',request.nextUrl.origin))
+export async function middleware(request: NextRequest) {
+  const token = await getToken({
+    req: request,
+    secret: process.env.AUTH_SECRET,
+    cookieName: process.env.NODE_ENV === 'production'
+      ? '__Secure-next-auth.session-token'
+      : 'next-auth.session-token',
+  });
+
+  console.log(token ? "token available" : "token missing");
+
+  const url = request.nextUrl.pathname;
+
+  if (token && (url.startsWith('/sign-in') || url.startsWith('/sign-up') || url.startsWith('/verify') || url === '/')) {
+    return NextResponse.redirect(new URL('/dashboard', request.nextUrl.origin));
   }
-  return NextResponse.next()
+  
+  if (!token && url.startsWith('/dashboard')) {
+    return NextResponse.redirect(new URL('/sign-in', request.nextUrl.origin));
+  }
 
+  return NextResponse.next();
 }
- 
-
 
 export const config = {
   matcher: [
@@ -31,5 +32,5 @@ export const config = {
     '/',
     '/dashboard/:path*',
     '/verify/:path*'
- ]
-}
+  ]
+};
