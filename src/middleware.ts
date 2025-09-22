@@ -5,6 +5,7 @@ import { getToken } from 'next-auth/jwt'
 export async function middleware(request: NextRequest) {
   const cookies = await request.cookies.getAll()
 console.log(cookies);
+console.log(process.env.AUTH_SECRET);
 
   const token = await getToken({
     req: request,
@@ -13,6 +14,7 @@ console.log(cookies);
     cookieName:process.env.NODE_ENV === "production"? "__Secure-next-auth.session-token": "next-auth.session-token"
   });
   console.log(token);
+  
   
   console.log(token ? "token available" : "token missing");
 
