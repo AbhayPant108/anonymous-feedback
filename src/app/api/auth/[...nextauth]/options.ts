@@ -80,7 +80,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 secure: process.env.NODE_ENV === "production", // only https
                 sameSite: "lax",
                 path:'/',
-                domain:"anonymous-feedback-ivory.vercel.app/"
             }
         }
     }
